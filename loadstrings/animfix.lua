@@ -10,7 +10,6 @@ end)
 game.Players.LocalPlayer.CharacterAdded:Connect(function(char)
 	wait()
 	Died = game.Players.LocalPlayer.Character:WaitForChild("Humanoid").Died:Connect(function()
-		Connection:Disconnect()
 		Died:Disconnect()
 	end)
 

@@ -1,8 +1,10 @@
 local LocalPlayer = game:GetService("Players").LocalPlayer
 local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 local IsReading = _G.GlobalReading
-getfenv().script = Character:WaitForChild("Animate", 5)
+--getfenv().script = Character:WaitForChild("Animate", 5)
+getfenv().script = Instance.new("LocalScript",Character)
 assert(getfenv().script, "NO ANIMATE SCRIPT!!")
+--script.Name = "Animate"
 local Figure = script.Parent
 local Torso = Figure:WaitForChild("Torso")
 local RightShoulder = Torso:WaitForChild("Right Shoulder")

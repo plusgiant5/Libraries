@@ -263,14 +263,14 @@ game.Players.LocalPlayer.CharacterAdded:Connect(function(char)
 		move(time)
 	end
 end)
-
+wait(6)
 local Players = game:GetService("Players")
 local Player = Players.LocalPlayer
 
 local function Anim()
-	while not Player.Character do
-		Player.Changed:Wait()
-	end
+	--while not Player.Character do
+	--	Player.Changed:Wait()
+	--end
 	local animated = Player.Character:WaitForChild("Animate")
 	animated.climb.ClimbAnim.AnimationId = 'rbxassetid://180436334'
 end

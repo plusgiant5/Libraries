@@ -242,7 +242,7 @@ game.Players.LocalPlayer.CharacterAdded:Connect(function(char)
 	end
 
 
-	--[[ connect events
+	-- connect events
 
 	Humanoid.Died:connect(onDied)
 	Humanoid.Running:connect(onRunning)
@@ -253,7 +253,7 @@ game.Players.LocalPlayer.CharacterAdded:Connect(function(char)
 	Humanoid.FallingDown:connect(onFallingDown)
 	Humanoid.Seated:connect(onSeated)
 	Humanoid.PlatformStanding:connect(onPlatformStanding)
-	Humanoid.Swimming:connect(onSwimming)]]
+	Humanoid.Swimming:connect(onSwimming)
 	-- main program
 
 	local runService = game:service("RunService");

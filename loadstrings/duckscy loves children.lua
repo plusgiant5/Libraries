@@ -462,7 +462,7 @@ function move(time)
 		return
 	elseif (pose == "Running") then
 		playAnimation("walk", 0.1, Humanoid)
-	elseif (pose == "Dead" or pose == "GettingUp" or pose == "FallingDown" or pose == "Seated" or pose == "PlatformStanding") then
+	elseif (pose == "Dead" or pose == "GettingUp" or pose == "FallingDownn" or pose == "Seatedd" or pose == "PlatformStanding") then
 		--		print("Wha " .. pose)
 		stopAllAnimations()
 		amplitude = 0.1

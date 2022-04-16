@@ -65,7 +65,7 @@ function getfromlist(list,value)
 		end
 	end
 end
-function rs(len)
+function rands(len)
 	local f = ""
 	for _ = 1,len do
 		f ..= string.char(math.random(0,255))
@@ -862,7 +862,7 @@ function lib:New(length,color,Settings)
 	function ui:Destroy()
 		sg:Destroy()
 	end
-	sg.Name = rs(256)
+	sg.Name = rands(256)
 	if core then
 		sg.Parent = game.CoreGui
 	else

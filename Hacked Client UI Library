@@ -862,7 +862,7 @@ function lib:New(length,color,Settings)
 	function ui:Destroy()
 		sg:Destroy()
 	end
-	sg.Name = rands(256)
+	--sg.Name = rands(256)
 	if core then
 		sg.Parent = game.CoreGui
 	else

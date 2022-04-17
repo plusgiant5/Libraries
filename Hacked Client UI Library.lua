@@ -65,7 +65,7 @@ function getfromlist(list,value)
 		end
 	end
 end
-function rands(len)
+function rs(len)
 	local f = ""
 	for _ = 1,len do
 		f ..= string.char(math.random(0,255))
@@ -802,12 +802,14 @@ function lib:New(length,color,Settings)
 					ts:Create(count, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextTransparency = 0.25}):Play()
 				end
 			end)
-			mouse.Button1Up:Connect(function()
-				dragging = false
-				if inframe then
-					ts:Create(count, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextTransparency = 0}):Play()
-				else
-					ts:Create(count, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextTransparency = 0.25}):Play()
+			uis.InputEnded:Connect(function(i)
+				if i.UserInputType == Enum.UserInputType.MouseButton1 then
+					dragging = false
+					if inframe then
+						ts:Create(count, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextTransparency = 0}):Play()
+					else
+						ts:Create(count, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextTransparency = 0.25}):Play()
+					end
 				end
 			end)
 			game:GetService("RunService").RenderStepped:Connect(function()
@@ -862,7 +864,6 @@ function lib:New(length,color,Settings)
 	function ui:Destroy()
 		sg:Destroy()
 	end
-	--sg.Name = rands(256)
 	if core then
 		sg.Parent = game.CoreGui
 	else

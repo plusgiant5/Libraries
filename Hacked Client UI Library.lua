@@ -398,7 +398,7 @@ function lib:New(length,color,Settings)
 		local r = ui:GetResolution()/2
 		local sf = Instance.new("Frame")
 		sf.Size = UDim2.fromOffset(sizex,30)
-		sf.Position = UDim2.fromOffset(r.X-(sizex/2),r.Y-(sizey/2)+math.random(-200,200))
+		sf.Position = UDim2.fromOffset(r.X-(sizex/2),r.Y-(sizey/2)+math.random(-100,200))
 		sf.BackgroundColor3 = color
 		sf.BorderSizePixel = 0
 		sf.ZIndex = 10

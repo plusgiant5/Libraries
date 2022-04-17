@@ -2,7 +2,7 @@
 
 almost all arguments are optional
 
-Library:New(length,color) > Creates new Library
+Library:New(length,color,Settings) > Creates new Library
 	Library:GetResolution() > Gets the screen resolution in a Vector2
 	Library:Window(title) > Creates new Window
 		Window:Text(text) > Creates new Text window object
@@ -37,8 +37,7 @@ Library:New(length,color) > Creates new Library
 		Settings:SetVisiblility(value) > Opens or closes the settings without clicking the settings button
 		Settings:GetVisiblility(value) > Returns true if the settings are open
 		Settings:Delete() > Deletes the settings
-	Library:GetSettings() > Returns a table of all the settings so you can save it to a file
-	Library:SetSettings() > Sets the settings to a new table
+	Library:GetSettings() > Returns a table of all the settings so you can save it to a file and load it in Library:New
 	Library:Destroy() > Deletes the UI
 
 ]]
@@ -390,15 +389,12 @@ function lib:New(length,color,Settings)
 	function ui:GetSettings()
 		return Settings
 	end
-	function ui:SetSettings(new)
-		Settings = new or {}
-	end
 	function ui:Settings(object,sizex,sizey)
 		assert(object and object.__obj,"Window object required for ui:Settings")
 		sizex = sizex or 300
 		sizey = sizey or 400
 		local sets = {}
-		Settings[object.__name] = {}
+		Settings[object.__name] = Settings[object.__name] or {}
 		local r = ui:GetResolution()/2
 		local sf = Instance.new("Frame")
 		sf.Size = UDim2.fromOffset(sizex,30)
@@ -603,7 +599,7 @@ function lib:New(length,color,Settings)
 			text = text or "Text"
 			callback = callback or function() end
 			local toggled = defaultvalue or false
-			Settings[object.__name][text] = toggled
+			Settings[object.__name][text] = Settings[object.__name][text] or toggled
 			local beg
 			local f = Instance.new("Frame")
 			f.Size = UDim2.new(1,0,0,30)
@@ -691,7 +687,7 @@ function lib:New(length,color,Settings)
 			default = ((default or min)-min)/(max-min)
 			callback = callback or function() end
 			local val = default
-			Settings[object.__name][text] = val
+			Settings[object.__name][text] = Settings[object.__name][text] or val
 			local lib = {}
 			local function round(n)
 				if nodecimals or max > 1000 then

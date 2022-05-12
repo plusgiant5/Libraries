@@ -231,25 +231,32 @@ end
 
 -- connect events
 
-Humanoid.Died:connect(onDied)
-Humanoid.Running:connect(onRunning)
-Humanoid.Jumping:connect(onJumping)
-Humanoid.Climbing:connect(onClimbing)
-Humanoid.GettingUp:connect(onGettingUp)
-Humanoid.FreeFalling:connect(onFreeFall)
-Humanoid.FallingDown:connect(onFallingDown)
-Humanoid.Seated:connect(onSeated)
-Humanoid.PlatformStanding:connect(onPlatformStanding)
-Humanoid.Swimming:connect(onSwimming)
+local conns = {}
+
+table.insert(conns,Humanoid.Died:connect(onDied))
+table.insert(conns,Humanoid.Running:connect(onRunning))
+table.insert(conns,Humanoid.Jumping:connect(onJumping))
+table.insert(conns,Humanoid.Climbing:connect(onClimbing))
+table.insert(conns,Humanoid.GettingUp:connect(onGettingUp))
+table.insert(conns,Humanoid.FreeFalling:connect(onFreeFall))
+table.insert(conns,Humanoid.FallingDown:connect(onFallingDown))
+table.insert(conns,Humanoid.Seated:connect(onSeated))
+table.insert(conns,Humanoid.PlatformStanding:connect(onPlatformStanding))
+table.insert(conns,Humanoid.Swimming:connect(onSwimming))
 -- main program
 
 local runService = game:service("RunService");
 
 spawn(function()
-while Figure.Parent~=nil do
-	local _, time = wait(0.1)
-	move(time)
-end
-  end)
+	while script and script.Parent do
+		local _, time = wait(0.1)
+		move(time)
+	end
+	for _,v in pairs(conns) do
+		pcall(function()
+			v:Disconnect()
+		end)
+	end
+end)
 
 return dummy

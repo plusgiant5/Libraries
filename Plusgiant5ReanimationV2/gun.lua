@@ -18,6 +18,7 @@ local sin = math.sin
 local cos = math.cos
 local mouse = plr:GetMouse()
 local zoom = 10
+local reanimating = _G.Get
 local uis = game:GetService("UserInputService")
 local gun = Instance.new("Part")
 gun.Size = Vector3.new(3.362, 1.273, 0.296)
@@ -110,7 +111,10 @@ uis.InputBegan:Connect(function(k,a)
 	end
 	if k.KeyCode == Enum.KeyCode.E then
 		aiming = not aiming
-	elseif k.UserInputType == Enum.UserInputType.MouseButton1 then
+		if not aiming then
+			shooting = false
+		end
+	elseif k.UserInputType == Enum.UserInputType.MouseButton1 and aiming then
 		shooting = true
 	end
 end)
@@ -118,7 +122,7 @@ uis.InputEnded:Connect(function(k,a)
 	if a then
 		return
 	end
-	if k.UserInputType == Enum.UserInputType.MouseButton1 then
+	if k.UserInputType == Enum.UserInputType.MouseButton1 and aiming then
 		shooting = false
 	end
 end)
@@ -126,7 +130,6 @@ local angle
 local look
 local lookz,lookx,looky
 local realhrp = reanimating and _G:GetCharPart("HumanoidRootPart")
-local reanimating = _G.Get
 if reanimating then
 	table.insert(mouseray.FilterDescendantsInstances,char.Parent)
 else
@@ -144,8 +147,9 @@ mainloop = rstepped:Connect(function()
 	end
 	--local ray = mouse.UnitRay
 	--ray.Direction *= 1000
+	local oldhrp
 	if reanimating then
-		local oldhrp = realhrp.Position
+		oldhrp = realhrp.Position
 		realhrp.Position = Vector3.new(0,0,0)
 	end
 	local rayhit = workspace:Raycast(mouse.UnitRay.Origin,mouse.UnitRay.Direction*99999,mouseray)
@@ -175,12 +179,7 @@ mainloop = rstepped:Connect(function()
 		lookz,lookx,looky = look:ToOrientation()
 	end)
 	local bulletspeed = 6
-	if shooting then
-		mousepart.Position = hitp
-	else
-		mousepart.Position = Vector3.new(hitp.X,hitp.Y+1000,hitp.Z)
-	end
-	bullet.CFrame = hrp.CFrame
+	mousepart.Position = Vector3.new(hitp.X,workspace.FallenPartsDestroyHeight+10,hitp.Z)
 	if aiming and angle then
 		if shooting then
 			
@@ -190,9 +189,13 @@ mainloop = rstepped:Connect(function()
 			lerp(ls,lso*CFrame.new(-.7+recoil,recoil*recoilverticalmult,-.6+(recoil*recoilhorizontalmult))*CFrame.Angles(rad(5),rad(-17),rad(-90-deg(lookz))),0,true)
 			
 			if frame % (bulletspeed*2) >= bulletspeed then
-				bullet.CFrame = CFrame.new(hitp):lerp(gun.CFrame,1)
+				bullet.CFrame = gun.CFrame
 			else
-				bullet.CFrame = gun.CFrame:lerp(CFrame.new(hitp),1)
+				if frame % (bulletspeed*2) == 1 then
+					bullet.CFrame = CFrame.new(hitp)
+				else
+					bullet.CFrame = bullet.CFrame
+				end
 			end
 			
 			if reanimating then
@@ -207,16 +210,23 @@ mainloop = rstepped:Connect(function()
 			if reanimating then
 				--hrpatt.Position = hrp.Position + Vector3.new(0,10,0)
 			end
+			
+			bullet.CFrame = hrp.CFrame
 		end
 		
 		lerp(n,no*CFrame.new(0,0,0)*CFrame.Angles(-lookz/2,0,0),0,true)
 		
 		hrp.CFrame *= hrp.CFrame.Rotation:inverse()*CFrame.Angles(rad(0),rad(angle),rad(0))
+		
+		if shooting then
+			mousepart.Position = hitp
+		end
 	else
+		bullet.CFrame = hrp.CFrame
 		lerp(gg,rso*CFrame.new(0,breath-1,0)*CFrame.Angles(rad(0),rad(0),rad(0)),basespeed,true)
 		if pose == "walking" then
-			lerp(rs,rso*CFrame.new(0,0,0)*CFrame.Angles(rad(0),rad(0),rad(sin(rad((frame)*6))*30)),0,true)
-			lerp(ls,lso*CFrame.new(0,0,0)*CFrame.Angles(rad(0),rad(0),rad(sin(rad((frame)*6))*30)),0,true)
+			lerp(rs,rso*CFrame.new(0,0,0)*CFrame.Angles(rad(0),rad(0),rad(sin(rad((frame)*12))*30)),0,true)
+			lerp(ls,lso*CFrame.new(0,0,0)*CFrame.Angles(rad(0),rad(0),rad(sin(rad((frame)*12))*30)),0,true)
 		else
 			lerp(rs,rso*CFrame.new(0,breath,0)*CFrame.Angles(rad(0),rad(0),rad(0)),basespeed,true)
 			lerp(ls,lso*CFrame.new(0,breath,0)*CFrame.Angles(rad(0),rad(0),rad(0)),basespeed,true)
@@ -232,14 +242,15 @@ mainloop = rstepped:Connect(function()
 		
 		lerp(n,no*CFrame.new(0,0,0)*CFrame.Angles(rad(0),rad(0),rad(0)),basespeed,true)
 	elseif pose == "walking" then
-		lerp(rh,rho*CFrame.new(0,0,0)*CFrame.Angles(rad(0),rad(0),rad(sin(rad((frame+120)*6))*30)),0,true)
-		lerp(lh,lho*CFrame.new(0,0,0)*CFrame.Angles(rad(0),rad(0),rad(sin(rad(frame*6))*30)),0,true)
+		lerp(rh,rho*CFrame.new(0,0,0)*CFrame.Angles(rad(0),rad(0),rad(sin(rad(frame*12+180))*30)),0,true)
+		lerp(lh,lho*CFrame.new(0,0,0)*CFrame.Angles(rad(0),rad(0),rad(sin(rad(frame*12+180))*30)),0,true)
 		
 		lerp(r,ro*CFrame.new(0,0,breath)*CFrame.Angles(rad(0),rad(0),rad(0)),basespeed,true)
 		
 		lerp(n,no*CFrame.new(0,0,0)*CFrame.Angles(rad(0),rad(0),rad(0)),basespeed,true)
 	end
 end)
+hum.WalkSpeed = 20
 if reanimating then
 	gunatt.Position = Vector3.new(0,0,-.6)
 	gunatt.Orientation = Vector3.new(0,0,-40)
@@ -253,5 +264,10 @@ if reanimating then
 	hrpatt.Position = Vector3.new()
 	hrpatt.Orientation = Vector3.new()
 	hrpatt.Parent = mousepart
+	_G:GetCharPart("RockAccessory").Handle.CanQuery = false
+	realhrp.CanQuery = false
+	mousepart.CanQuery = false
+	bullet.CanQuery = false
+	gun.CanQuery = false
 	table.insert(mouseray.FilterDescendantsInstances,realhrp)
 end

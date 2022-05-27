@@ -104,14 +104,20 @@ function endscript()
 end
 local aiming = false
 local shooting = false
-uis.InputBegan:Connect(function(k)
+uis.InputBegan:Connect(function(k,a)
+	if a then
+		return
+	end
 	if k.KeyCode == Enum.KeyCode.E then
 		aiming = not aiming
 	elseif k.UserInputType == Enum.UserInputType.MouseButton1 then
 		shooting = true
 	end
 end)
-uis.InputEnded:Connect(function(k)
+uis.InputEnded:Connect(function(k,a)
+	if a then
+		return
+	end
 	if k.UserInputType == Enum.UserInputType.MouseButton1 then
 		shooting = false
 	end
@@ -119,7 +125,7 @@ end)
 local angle
 local look
 local lookz,lookx,looky
-local realhrp = _G:GetCharPart("HumanoidRootPart")
+local realhrp = reanimating and _G:GetCharPart("HumanoidRootPart")
 local reanimating = _G.Get
 if reanimating then
 	table.insert(mouseray.FilterDescendantsInstances,char.Parent)
@@ -138,10 +144,14 @@ mainloop = rstepped:Connect(function()
 	end
 	--local ray = mouse.UnitRay
 	--ray.Direction *= 1000
-	local oldhrp = realhrp.Position
-	realhrp.Position = Vector3.new(0,0,0)
+	if reanimating then
+		local oldhrp = realhrp.Position
+		realhrp.Position = Vector3.new(0,0,0)
+	end
 	local rayhit = workspace:Raycast(mouse.UnitRay.Origin,mouse.UnitRay.Direction*99999,mouseray)
-	realhrp.Position = oldhrp
+	if reanimating then
+		realhrp.Position = oldhrp
+	end
 	frame += 1
 	zoom = (workspace.CurrentCamera.CFrame.p-head.Position).magnitude
 	local move = hum.MoveDirection ~= Vector3.new(0,0,0)
@@ -203,7 +213,7 @@ mainloop = rstepped:Connect(function()
 		
 		hrp.CFrame *= hrp.CFrame.Rotation:inverse()*CFrame.Angles(rad(0),rad(angle),rad(0))
 	else
-		lerp(gg,rso*CFrame.new(0,breath,0)*CFrame.Angles(rad(0),rad(0),rad(0)),basespeed,true)
+		lerp(gg,rso*CFrame.new(0,breath-1,0)*CFrame.Angles(rad(0),rad(0),rad(0)),basespeed,true)
 		if pose == "walking" then
 			lerp(rs,rso*CFrame.new(0,0,0)*CFrame.Angles(rad(0),rad(0),rad(sin(rad((frame)*6))*30)),0,true)
 			lerp(ls,lso*CFrame.new(0,0,0)*CFrame.Angles(rad(0),rad(0),rad(sin(rad((frame)*6))*30)),0,true)

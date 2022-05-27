@@ -1,4 +1,5 @@
-local netlessmult = 1
+local netlessmult = _G.netlessmult or 1
+local safenetless = _G.safenetless or true
 
 
 
@@ -1034,9 +1035,9 @@ else
 	return
 end
 hrp.Parent = workspace
---[[local box = Instance.new("SelectionBox")
+local box = Instance.new("SelectionBox")
 box.Adornee = hrp
-box.Parent = hrp]]
+box.Parent = hrp
 attach(hrp,Vector3.new()).Parent = dummy["HumanoidRootPart"]
 delay(1,function()
 	local fling = Instance.new("BodyAngularVelocity")
@@ -1080,11 +1081,27 @@ for _,v in pairs(char:GetDescendants()) do
 end
 char.Parent = dummy
 connections[#connections+1] = game:GetService("RunService").Stepped:Connect(function()
-	for _,v in pairs(char:GetChildren()) do
-		if v:IsA("BasePart") and v.Name ~= "HumanoidRootPart" then
+	for _,v in pairs(char:GetDescendants()) do
+		if v:IsA("BasePart") then
 			v.CanCollide = false
 		end
 	end
+	hrp.CanCollide = false
+	--[[pcall(function()
+		char.Head.CanCollide = false
+	end)
+	pcall(function()
+		char.UpperTorso.CanCollide = false
+	end)
+	pcall(function()
+		char.LowerTorso.CanCollide = false
+	end)
+	pcall(function()
+		char.Torso.CanCollide = false
+	end)
+	pcall(function()
+		char.HumanoidRootPart.CanCollide = false
+	end)]]
 	for _,v in pairs(game.Players:GetPlayers()) do
 		if v ~= plr then
 			pcall(function()
@@ -1118,6 +1135,8 @@ workspace.CurrentCamera.CameraSubject = dummy.Humanoid
 connections[#connections+1] = plr.Chatted:Connect(function(msg)
 	if msg == "/e ;re" or msg == ";re" then
 		SendNotification("Respawning...")
+		_G.e += 1
+		wait(.1)
 		plr.Character = dummy
 		for _,c in pairs(connections) do
 			c:Disconnect()

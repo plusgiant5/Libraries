@@ -1,5 +1,5 @@
 local netlessmult = _G.netlessmult or 1
-local safenetless = _G.safenetless or true
+local safenetless = _G.safenetless or false
 
 
 

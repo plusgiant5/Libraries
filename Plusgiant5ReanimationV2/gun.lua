@@ -145,115 +145,110 @@ mainloop = rstepped:Connect(function()
 		endscript()
 		return
 	end
-	local s,e = pcall(function()
-		--local ray = mouse.UnitRay
-		--ray.Direction *= 1000
-		local oldhrp
-		if reanimating then
-			oldhrp = realhrp.Position
-			realhrp.Position = Vector3.new(0,0,0)
+	--local ray = mouse.UnitRay
+	--ray.Direction *= 1000
+	local oldhrp
+	if reanimating then
+		oldhrp = realhrp.Position
+		realhrp.Position = Vector3.new(0,0,0)
+	end
+	local rayhit = workspace:Raycast(mouse.UnitRay.Origin,mouse.UnitRay.Direction*99999,mouseray)
+	rayhit = (rayhit and rayhit.Position) or mouse.hit.p
+	if reanimating then
+		realhrp.Position = oldhrp
+	end
+	frame += 1
+	zoom = (workspace.CurrentCamera.CFrame.p-head.Position).magnitude
+	local move = hum.MoveDirection ~= Vector3.new(0,0,0)
+	if pose ~= "aiming" then
+		if move then
+			pose = "walking"
+		else
+			pose = "idle"
 		end
-		local rayhit = workspace:Raycast(mouse.UnitRay.Origin,mouse.UnitRay.Direction*99999,mouseray)
-		if reanimating then
-			realhrp.Position = oldhrp
-		end
-		frame += 1
-		zoom = (workspace.CurrentCamera.CFrame.p-head.Position).magnitude
-		local move = hum.MoveDirection ~= Vector3.new(0,0,0)
-		if pose ~= "aiming" then
-			if move then
-				pose = "walking"
+	end
+	local basespeed = .2
+	local breath = sin(rad(frame*7))/60
+	local recoil = sin(rad(frame*55))/5+.06
+	local recoilverticalmult = math.random(10,100)/100
+	local recoilhorizontalmult = math.random(10,40)/100
+	local hrpp = gun.Position
+	local hitp = rayhit
+	pcall(function()
+		angle = deg(math.atan2(hrpp.X-hitp.X,hrpp.Z-hitp.Z))
+		look = CFrame.new(hrpp,hitp)
+		lookz,lookx,looky = look:ToOrientation()
+	end)
+	local bulletspeed = 6
+	mousepart.Position = Vector3.new(hitp.X,workspace.FallenPartsDestroyHeight+10,hitp.Z)
+	if aiming and angle then
+		if shooting then
+			
+			lerp(gg,rso*CFrame.Angles(0,rad(180),-lookz)*CFrame.new(-2.3+recoil,.25+(recoil*recoilverticalmult),1+(recoil*recoilhorizontalmult)),0,true)
+			
+			lerp(rs,rso*CFrame.new(.1-recoil,recoil*recoilverticalmult,-.5+(recoil*recoilhorizontalmult))*CFrame.Angles(rad(0),rad(25),rad(90+deg(lookz))),0,true)
+			lerp(ls,lso*CFrame.new(-.7+recoil,recoil*recoilverticalmult,-.6+(recoil*recoilhorizontalmult))*CFrame.Angles(rad(5),rad(-17),rad(-90-deg(lookz))),0,true)
+			
+			if frame % (bulletspeed*2) >= bulletspeed then
+				bullet.CFrame = gun.CFrame
 			else
-				pose = "idle"
-			end
-		end
-		local basespeed = .2
-		local breath = sin(rad(frame*7))/60
-		local recoil = sin(rad(frame*55))/5+.06
-		local recoilverticalmult = math.random(10,100)/100
-		local recoilhorizontalmult = math.random(10,40)/100
-		local hrpp = gun.Position
-		local hitp = rayhit and rayhit.Position
-		pcall(function()
-			angle = deg(math.atan2(hrpp.X-hitp.X,hrpp.Z-hitp.Z))
-			look = CFrame.new(hrpp,hitp)
-			lookz,lookx,looky = look:ToOrientation()
-		end)
-		local bulletspeed = 6
-		mousepart.Position = Vector3.new(hitp.X,workspace.FallenPartsDestroyHeight+10,hitp.Z)
-		if aiming and angle then
-			if shooting then
-
-				lerp(gg,rso*CFrame.Angles(0,rad(180),-lookz)*CFrame.new(-2.3+recoil,.25+(recoil*recoilverticalmult),1+(recoil*recoilhorizontalmult)),0,true)
-
-				lerp(rs,rso*CFrame.new(.1-recoil,recoil*recoilverticalmult,-.5+(recoil*recoilhorizontalmult))*CFrame.Angles(rad(0),rad(25),rad(90+deg(lookz))),0,true)
-				lerp(ls,lso*CFrame.new(-.7+recoil,recoil*recoilverticalmult,-.6+(recoil*recoilhorizontalmult))*CFrame.Angles(rad(5),rad(-17),rad(-90-deg(lookz))),0,true)
-
-				if frame % (bulletspeed*2) >= bulletspeed then
-					bullet.CFrame = gun.CFrame
+				if frame % (bulletspeed*2) == 1 then
+					bullet.CFrame = CFrame.new(hitp)
 				else
-					if frame % (bulletspeed*2) == 1 then
-						bullet.CFrame = CFrame.new(hitp)
-					else
-						bullet.CFrame = bullet.CFrame
-					end
+					bullet.CFrame = bullet.CFrame
 				end
-
-				if reanimating then
-					--hrpatt.Position = hitp
-				end
-			else
-				lerp(gg,rso*CFrame.Angles(0,rad(180),-lookz)*CFrame.new(-2.3,.25,1),0,true)
-
-				lerp(rs,rso*CFrame.new(.1,0,-.5)*CFrame.Angles(rad(0),rad(25),rad(90+deg(lookz))),0,true)
-				lerp(ls,lso*CFrame.new(-.7,0,-.6)*CFrame.Angles(rad(5),rad(-17),rad(-90-deg(lookz))),0,true)
-
-				if reanimating then
-					--hrpatt.Position = hrp.Position + Vector3.new(0,10,0)
-				end
-
-				bullet.CFrame = hrp.CFrame
 			end
-
-			lerp(n,no*CFrame.new(0,0,0)*CFrame.Angles(-lookz/2,0,0),0,true)
-
-			hrp.CFrame *= hrp.CFrame.Rotation:inverse()*CFrame.Angles(rad(0),rad(angle),rad(0))
-
-			if shooting then
-				mousepart.Position = hitp
+			
+			if reanimating then
+				--hrpatt.Position = hitp
 			end
 		else
-			bullet.CFrame = hrp.CFrame
-			lerp(gg,rso*CFrame.new(0,breath-1,0)*CFrame.Angles(rad(0),rad(0),rad(0)),basespeed,true)
-			if pose == "walking" then
-				lerp(rs,rso*CFrame.new(0,0,0)*CFrame.Angles(rad(0),rad(0),rad(sin(rad((frame)*12))*30)),0,true)
-				lerp(ls,lso*CFrame.new(0,0,0)*CFrame.Angles(rad(0),rad(0),rad(sin(rad((frame)*12))*30)),0,true)
-			else
-				lerp(rs,rso*CFrame.new(0,breath,0)*CFrame.Angles(rad(0),rad(0),rad(0)),basespeed,true)
-				lerp(ls,lso*CFrame.new(0,breath,0)*CFrame.Angles(rad(0),rad(0),rad(0)),basespeed,true)
+			lerp(gg,rso*CFrame.Angles(0,rad(180),-lookz)*CFrame.new(-2.3,.25,1),0,true)
+			
+			lerp(rs,rso*CFrame.new(.1,0,-.5)*CFrame.Angles(rad(0),rad(25),rad(90+deg(lookz))),0,true)
+			lerp(ls,lso*CFrame.new(-.7,0,-.6)*CFrame.Angles(rad(5),rad(-17),rad(-90-deg(lookz))),0,true)
+			
+			if reanimating then
+				--hrpatt.Position = hrp.Position + Vector3.new(0,10,0)
 			end
-
-			lerp(n,no*CFrame.new(0,0,0)*CFrame.Angles(rad(0),rad(0),rad(0)),basespeed,true)
+			
+			bullet.CFrame = hrp.CFrame
 		end
-		if pose == "idle" then
-			lerp(rh,rho*CFrame.new(0,breath,0)*CFrame.Angles(rad(0),rad(0),rad(0)),basespeed,true)
-			lerp(lh,lho*CFrame.new(0,breath,0)*CFrame.Angles(rad(0),rad(0),rad(0)),basespeed,true)
-
-			lerp(r,ro*CFrame.new(0,0,breath)*CFrame.Angles(rad(0),rad(0),rad(0)),basespeed,true)
-
-			lerp(n,no*CFrame.new(0,0,0)*CFrame.Angles(rad(0),rad(0),rad(0)),basespeed,true)
-		elseif pose == "walking" then
-			lerp(rh,rho*CFrame.new(0,0,0)*CFrame.Angles(rad(0),rad(0),rad(sin(rad(frame*12+180))*30)),0,true)
-			lerp(lh,lho*CFrame.new(0,0,0)*CFrame.Angles(rad(0),rad(0),rad(sin(rad(frame*12+180))*30)),0,true)
-
-			lerp(r,ro*CFrame.new(0,0,breath)*CFrame.Angles(rad(0),rad(0),rad(0)),basespeed,true)
-
-			lerp(n,no*CFrame.new(0,0,0)*CFrame.Angles(rad(0),rad(0),rad(0)),basespeed,true)
+		
+		lerp(n,no*CFrame.new(0,0,0)*CFrame.Angles(-lookz/2,0,0),0,true)
+		
+		hrp.CFrame *= hrp.CFrame.Rotation:inverse()*CFrame.Angles(rad(0),rad(angle),rad(0))
+		
+		if shooting then
+			mousepart.Position = hitp
 		end
-	end)
-	if not s then
-		warn(e)
-		bullet.CFrame = bullet.CFrame
+	else
+		bullet.CFrame = hrp.CFrame
+		lerp(gg,rso*CFrame.new(0,breath-1,0)*CFrame.Angles(rad(0),rad(0),rad(0)),basespeed,true)
+		if pose == "walking" then
+			lerp(rs,rso*CFrame.new(0,0,0)*CFrame.Angles(rad(0),rad(0),rad(sin(rad((frame)*12))*30)),0,true)
+			lerp(ls,lso*CFrame.new(0,0,0)*CFrame.Angles(rad(0),rad(0),rad(sin(rad((frame)*12))*30)),0,true)
+		else
+			lerp(rs,rso*CFrame.new(0,breath,0)*CFrame.Angles(rad(0),rad(0),rad(0)),basespeed,true)
+			lerp(ls,lso*CFrame.new(0,breath,0)*CFrame.Angles(rad(0),rad(0),rad(0)),basespeed,true)
+		end
+		
+		lerp(n,no*CFrame.new(0,0,0)*CFrame.Angles(rad(0),rad(0),rad(0)),basespeed,true)
+	end
+	if pose == "idle" then
+		lerp(rh,rho*CFrame.new(0,breath,0)*CFrame.Angles(rad(0),rad(0),rad(0)),basespeed,true)
+		lerp(lh,lho*CFrame.new(0,breath,0)*CFrame.Angles(rad(0),rad(0),rad(0)),basespeed,true)
+		
+		lerp(r,ro*CFrame.new(0,0,breath)*CFrame.Angles(rad(0),rad(0),rad(0)),basespeed,true)
+		
+		lerp(n,no*CFrame.new(0,0,0)*CFrame.Angles(rad(0),rad(0),rad(0)),basespeed,true)
+	elseif pose == "walking" then
+		lerp(rh,rho*CFrame.new(0,0,0)*CFrame.Angles(rad(0),rad(0),rad(sin(rad(frame*12+180))*30)),0,true)
+		lerp(lh,lho*CFrame.new(0,0,0)*CFrame.Angles(rad(0),rad(0),rad(sin(rad(frame*12+180))*30)),0,true)
+		
+		lerp(r,ro*CFrame.new(0,0,breath)*CFrame.Angles(rad(0),rad(0),rad(0)),basespeed,true)
+		
+		lerp(n,no*CFrame.new(0,0,0)*CFrame.Angles(rad(0),rad(0),rad(0)),basespeed,true)
 	end
 end)
 hum.WalkSpeed = 20

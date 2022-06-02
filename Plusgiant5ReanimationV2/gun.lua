@@ -106,9 +106,6 @@ end
 local aiming = false
 local shooting = false
 uis.InputBegan:Connect(function(k,a)
-	if a then
-		return
-	end
 	if k.KeyCode == Enum.KeyCode.E then
 		aiming = not aiming
 		if not aiming then
@@ -119,9 +116,6 @@ uis.InputBegan:Connect(function(k,a)
 	end
 end)
 uis.InputEnded:Connect(function(k,a)
-	if a then
-		return
-	end
 	if k.UserInputType == Enum.UserInputType.MouseButton1 and aiming then
 		shooting = false
 	end

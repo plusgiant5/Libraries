@@ -7,7 +7,7 @@ repeat wait() until game.Players.LocalPlayer and game.Players.LocalPlayer.Charac
 print("HERE")
 notif("Starting soon")
 wait(2)
-queue_on_teleport(game:HttpGet("https://raw.githubusercontent.com/plusgiant5/Libraries/main/JToH%20Beat%20Game.lua"))
+queue_on_teleport("print('aaa')"..game:HttpGet("https://raw.githubusercontent.com/plusgiant5/Libraries/main/JToH%20Beat%20Game.lua"))
 local plr = game.Players.LocalPlayer
 local char = plr.Character
 local head = char.Head

@@ -39,7 +39,7 @@ for _,v in pairs(todo) do
 	if not comp[v.BadgeID.Value] then
 		notif("Doing "..t)
 		firetouchinterest(workspace.Teleporters[t].Teleporter.TPFRAME,head,0)
-		ready.Event:Wait()
+		wait(5)
 		wait()
 		local vvm = Instance.new("Tool")
 		vvm.Name = "Vertical Mobility"
@@ -61,7 +61,7 @@ for _,v in pairs(todo) do
 			antitp()
 		else
 			firetouchinterest(v,head,0)
-			ready.Event:Wait()
+			wait(5)
 			wait(6)
 		end
 	end

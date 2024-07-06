@@ -1,5 +1,3 @@
-## Terms of Service
-
 ### 1. Acceptance of Terms
 By using the Konstant Decompiler Discord bot ("the Bot"), you agree to these Terms of Service ("Terms"). If you do not agree to these Terms, do not use the Bot.
 

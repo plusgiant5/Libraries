@@ -1,5 +1,3 @@
-## Privacy Policy
-
 ### 1. Information We Collect
 - We collect bytecode samples submitted through the Bot for the purpose of improving our decompilation and disassembly services.
 
@@ -12,13 +10,9 @@
 - However, we cannot guarantee the absolute security of your data.
 
 ### 4. Data Retention
-- Bytecode samples are retained for as long as necessary to fulfill the purposes outlined in this Privacy Policy.
+- Bytecode samples are retained indefinitely for the purposes outlined in this Privacy Policy.
 
-### 5. User Rights
-- You have the right to request the deletion of your submitted bytecode samples.
-- You can contact us through Discord to exercise this right.
-
-### 6. Changes to Privacy Policy
+### 5. Changes to Privacy Policy
 - We may update this Privacy Policy from time to time.
 - We will notify you of any significant changes through Discord.
 

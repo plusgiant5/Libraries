@@ -236,6 +236,7 @@ export type funcdef_index = {
 	type: "index";
 	base: string;
 	indexes: {string};
+	namecall: boolean;
 }
 export type funcdef = funcdef_local | funcdef_global | funcdef_index
 export type funcdef_type = typeof(({}::funcdef).type)
@@ -741,9 +742,13 @@ local stat_case = {
 				new_variable = true;
 			}
 		elseif current_name.type == "AstExprIndexName" then
+			local namecall = false
 			local indexes = {}
 			repeat
 				table.insert(indexes, current_name.index)
+				if current_name.op == ":" then
+					namecall = true
+				end
 				current_name = current_name.expr
 			until current_name.type ~= "AstExprIndexName"
 			local base
@@ -759,6 +764,7 @@ local stat_case = {
 				type = "index";
 				base = base;
 				indexes = indexes;
+				namecall = namecall;
 			}
 		else
 			error(`Unexpected type "{current_name.type}" in function name`)
